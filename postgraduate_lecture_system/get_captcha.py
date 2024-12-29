@@ -81,32 +81,38 @@ if __name__ == "__main__":
     password = config["ACCOUNT"]["password"]
 
     # 读取哈希表
+    label_file_path = "label.txt"
     hash_table = {}
-    with open("hash_table.csv", "r") as f:
+    if not os.path.exists(label_file_path):
+        os.mknod(label_file_path)
+    with open(label_file_path, "r") as f:
         for line in f:
-            key, value = line.strip().split(",")
-            hash_table[key] = value
+            file_name, label = line.strip().split("\t")
+            hash_val = file_name.split(".")[0][5:]
+            hash_table[label] = hash_val
 
+    charset = "234567890"
     ocr = ddddocr.DdddOcr(
         import_onnx_path="model.onnx",
         charsets_path="charsets.json",
     )
-    ocr.set_ranges("234567890")
+    ocr.set_ranges(charset)
 
     # 登录研究生素质讲座系统
     session = login_postgraduate_lecture_system(username, password)
 
+    # 获取 - 识别 - 人工校对 - 保存
     cnt = 0
     right = 0
     fig, ax = plt.subplots()
     ax.axis("off")
     img_display = ax.imshow([[0]])
-
     while cnt < 100:
         # 获取验证码
         img = get_captcha_in_postgraduate_lecture_system(session)
 
         # 检查是否已存在
+        # NOTE: 直接对img进行hash和存储后hash的结果不同
         img = Image.open(BytesIO(img))
         img.save(f"images/tmp.jpg")
         img = Image.open(f"images/tmp.jpg")
@@ -122,11 +128,16 @@ if __name__ == "__main__":
 
         # 验证码识别
         result = ocr.classification(img)
+        # result = ocr.classification(img, probability=True)
+        # s = ""
+        # for j in result["probability"]:
+        #     s += result["charsets"][j.index(max(j))]
+        # result = s
         print(result)
 
         # 输入验证码
         true_val = ""
-        while len(true_val) != 4:
+        while len(true_val) != 4 or not set(true_val).issubset(set(charset)):
             true_val = input("按ENTER确认识别结果，或输入正确的验证码：")
             if true_val == "":
                 true_val = result
@@ -135,8 +146,8 @@ if __name__ == "__main__":
         # 保存
         os.rename(f"images/tmp.jpg", f"images/{true_val}_{calc_hash}.jpg")
         hash_table[true_val] = calc_hash
-        with open("hash_table.csv", "a") as f:
-            f.write(f"{true_val},{calc_hash}\n")
+        with open(label_file_path, "a") as f:
+            f.write(f"{true_val}_{calc_hash}.jpg\t{true_val}\n")
 
         if true_val == result:
             right += 1
