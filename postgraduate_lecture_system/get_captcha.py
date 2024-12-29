@@ -91,6 +91,7 @@ if __name__ == "__main__":
             hash_val = file_name.split(".")[0][5:]
             hash_table[label] = hash_val
 
+    # 初始化识别器
     charset = "234567890"
     ocr = ddddocr.DdddOcr(
         import_onnx_path="model.onnx",
@@ -106,7 +107,7 @@ if __name__ == "__main__":
     right = 0
     fig, ax = plt.subplots()
     ax.axis("off")
-    img_display = ax.imshow([[0]])
+    img_display = ax.imshow([[0]], aspect="auto")
     while cnt < 100:
         # 获取验证码
         img = get_captcha_in_postgraduate_lecture_system(session)
