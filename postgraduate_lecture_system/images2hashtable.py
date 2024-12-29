@@ -8,6 +8,7 @@ hash_table = {}
 for file in os.listdir("images"):
     if file == "tmp.jpg":
         os.remove(f"images/{file}")
+        continue
     true_val, hash_val = file.split("_")
     hash_val = hash_val.split(".")[0]
 
