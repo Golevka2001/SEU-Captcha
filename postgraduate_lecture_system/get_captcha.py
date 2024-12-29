@@ -57,7 +57,8 @@ def get_captcha_in_postgraduate_lecture_system(session):
     """
     try:
         res = session.post(
-            url=f"https://ehall.seu.edu.cn/gsapp/sys/jzxxtjapp/hdyy/vcode.do?_={int(time.time() * 1000)}"
+            url=f"https://ehall.seu.edu.cn/gsapp/sys/jzxxtjapp/hdyy/vcode.do?_={int(time.time() * 1000)}",
+            verify=False,
         )
         if res.status_code != 200:
             raise Exception(f"POST请求失败[{res.status_code}, {res.reason}]")
@@ -86,7 +87,10 @@ if __name__ == "__main__":
             key, value = line.strip().split(",")
             hash_table[key] = value
 
-    ocr = ddddocr.DdddOcr()
+    ocr = ddddocr.DdddOcr(
+        import_onnx_path="model.onnx",
+        charsets_path="charsets.json",
+    )
     ocr.set_ranges("234567890")
 
     # 登录研究生素质讲座系统
@@ -98,7 +102,7 @@ if __name__ == "__main__":
     ax.axis("off")
     img_display = ax.imshow([[0]])
 
-    for i in range(100):
+    while cnt < 100:
         # 获取验证码
         img = get_captcha_in_postgraduate_lecture_system(session)
 
@@ -117,18 +121,15 @@ if __name__ == "__main__":
         plt.pause(0.1)
 
         # 验证码识别
-        result = ocr.classification(img, probability=True)
-        s = ""
-        for i in result["probability"]:
-            s += result["charsets"][i.index(max(i))]
-        print(s)
+        result = ocr.classification(img)
+        print(result)
 
         # 输入验证码
         true_val = ""
         while len(true_val) != 4:
             true_val = input("按ENTER确认识别结果，或输入正确的验证码：")
             if true_val == "":
-                true_val = s
+                true_val = result
                 break
 
         # 保存
@@ -136,7 +137,7 @@ if __name__ == "__main__":
         with open("hash_table.csv", "a") as f:
             f.write(f"{true_val},{calc_hash}\n")
 
-        if true_val == s:
+        if true_val == result:
             right += 1
         cnt += 1
         print(f"当前正确率：{right}/{cnt}= {right/cnt*100:.2f}%")
