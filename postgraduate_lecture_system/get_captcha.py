@@ -81,7 +81,7 @@ if __name__ == "__main__":
     password = config["ACCOUNT"]["password"]
 
     # 读取哈希表
-    label_file_path = "label.txt"
+    label_file_path = "labels.txt"
     hash_table = {}
     if not os.path.exists(label_file_path):
         os.mknod(label_file_path)

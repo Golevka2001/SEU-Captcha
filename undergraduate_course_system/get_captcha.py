@@ -46,7 +46,7 @@ if __name__ == "__main__":
 
     # 由于存在特殊字符，所以用 label.txt 保存
     # 格式：{hash_val}.jpg\t{label}
-    label_file_path = "label.txt"
+    label_file_path = "labels.txt"
     hash_table = {}
     if not os.path.exists(label_file_path):
         os.mknod(label_file_path)
