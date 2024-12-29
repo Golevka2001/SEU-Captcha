@@ -58,7 +58,10 @@ if __name__ == "__main__":
 
     # 初始化识别器
     charset = "1234567890+-x=?"
-    ocr = ddddocr.DdddOcr()
+    ocr = ddddocr.DdddOcr(
+        import_onnx_path="model.onnx",
+        charsets_path="charsets.json",
+    )
     ocr.set_ranges(charset)
 
     # 获取 - 识别 - 人工校对 - 保存
@@ -88,12 +91,12 @@ if __name__ == "__main__":
         plt.pause(0.1)
 
         # 验证码识别
-        # result = ocr.classification(img)
-        result = ocr.classification(img, probability=True)
-        s = ""
-        for j in result["probability"]:
-            s += result["charsets"][j.index(max(j))]
-        result = s
+        result = ocr.classification(img)
+        # result = ocr.classification(img, probability=True)
+        # s = ""
+        # for j in result["probability"]:
+        #     s += result["charsets"][j.index(max(j))]
+        # result = s
         print(result)
 
         # 输入验证码
@@ -104,8 +107,7 @@ if __name__ == "__main__":
                 true_val = result
                 break
             # 修正
-            if true_val[-1] == "？":
-                true_val = true_val[:-1] + "?"
+            true_val = true_val.replace("？", "?").replace("*", "x")
             if true_val[-1].isdigit():
                 true_val = true_val + "=?"
 
