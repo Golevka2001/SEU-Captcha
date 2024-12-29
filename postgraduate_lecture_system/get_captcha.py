@@ -134,6 +134,7 @@ if __name__ == "__main__":
 
         # 保存
         os.rename(f"images/tmp.jpg", f"images/{true_val}_{calc_hash}.jpg")
+        hash_table[true_val] = calc_hash
         with open("hash_table.csv", "a") as f:
             f.write(f"{true_val},{calc_hash}\n")
 
