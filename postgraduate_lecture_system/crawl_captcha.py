@@ -84,6 +84,7 @@ if __name__ == "__main__":
     label_file_path = "dataset/labels.txt"
     hash_table = {}
     if not os.path.exists(label_file_path):
+        os.makedirs("dataset/images", exist_ok=True)
         os.mknod(label_file_path)
     with open(label_file_path, "r") as f:
         for line in f:
@@ -108,6 +109,7 @@ if __name__ == "__main__":
     fig, ax = plt.subplots()
     ax.axis("off")
     img_display = ax.imshow([[0]], aspect="auto")
+
     while cnt < 100:
         # 获取验证码
         img = get_captcha_in_postgraduate_lecture_system(session)
