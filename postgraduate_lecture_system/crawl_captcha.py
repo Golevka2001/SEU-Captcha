@@ -94,8 +94,8 @@ if __name__ == "__main__":
     # 初始化识别器
     charset = "234567890"
     ocr = ddddocr.DdddOcr(
-        import_onnx_path="model.onnx",
-        charsets_path="charsets.json",
+        import_onnx_path="model/model.onnx",
+        charsets_path="model/charsets.json",
     )
     ocr.set_ranges(charset)
 
