@@ -1,5 +1,4 @@
 import base64
-import configparser
 import os
 from io import BytesIO
 
@@ -30,15 +29,6 @@ def get_captcha_in_undergraduate_course_system():
 
 
 if __name__ == "__main__":
-    # 读取配置文件，使用时须在`config.ini`中填入一卡通号和密码
-    config = configparser.ConfigParser()
-    config_file_name = (
-        "local_config.ini" if os.path.exists("local_config.ini") else "config.ini"
-    )
-    config.read(config_file_name)
-    username = config["ACCOUNT"]["username"]
-    password = config["ACCOUNT"]["password"]
-
     # 初始化识别器
     charset = "1234567890+-x=?"
     ocr = ddddocr.DdddOcr(
@@ -54,8 +44,6 @@ if __name__ == "__main__":
     ax.axis("off")
     img_display = ax.imshow([[0]], aspect="auto")
 
-    # 加载./dataset/images/下的图片
-    local_imgs = os.listdir("./dataset/images/")
     while cnt < 100:
         # 获取验证码
         img = get_captcha_in_undergraduate_course_system()
