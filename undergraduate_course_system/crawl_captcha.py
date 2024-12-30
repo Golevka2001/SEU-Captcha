@@ -1,7 +1,6 @@
 import base64
 import configparser
 import os
-from hashlib import md5
 from io import BytesIO
 
 import ddddocr
@@ -42,7 +41,10 @@ if __name__ == "__main__":
 
     # 初始化识别器
     charset = "1234567890+-x=?"
-    ocr = ddddocr.DdddOcr()
+    ocr = ddddocr.DdddOcr(
+        import_onnx_path="model/model.onnx",
+        charsets_path="model/charsets.json",
+    )
     ocr.set_ranges(charset)
 
     # 获取 - 识别 - 人工校对 - 保存
@@ -51,17 +53,15 @@ if __name__ == "__main__":
     fig, ax = plt.subplots()
     ax.axis("off")
     img_display = ax.imshow([[0]], aspect="auto")
+
+    # 加载./dataset/images/下的图片
+    local_imgs = os.listdir("./dataset/images/")
     while cnt < 100:
         # 获取验证码
         img = get_captcha_in_undergraduate_course_system()
 
         # 显示
         img = Image.open(BytesIO(img))
-        print(img)
-        img.save("tmp.png")
-        img = Image.open("tmp.png")
-        print(img)
-        # os.remove("tmp.png")
         img_display.set_data(img)
         plt.draw()
         plt.pause(0.1)
