@@ -19,10 +19,14 @@ class Main {
         try {
             // Generate captcha
             ArithmeticCaptcha captcha = new ArithmeticCaptcha(111, 36);
-            captcha.setFont(Captcha.FONT_1);
+            // Set random font style (Font.PLAIN, Font.BOLD, Font.ITALIC) & font size (32+-4)
+            int fontStyle = (int) (Math.random() * 3);
+            int fontSize = 32 + (int) (Math.random() * 9) - 4;
+            captcha.setFont(Captcha.FONT_1, fontStyle, fontSize);
             captcha.setLen(3); // 3 integers
             captcha.supportAlgorithmSign(4); // 4 represents +, -, x
             captcha.setDifficulty(10); // upper bound of the integers
+
             String label = captcha.getArithmeticString(); // expression
             // String result = captcha.text(); // result
             // System.out.println("label: " + label);
@@ -52,10 +56,9 @@ class Main {
     /**
      * Generate arithmetic captcha and save
      *
-     * @param args [loopCount, imagesPath, labelPath]
-     *  loopCount: number of captcha to generate
-     *  imagesPath: path to `images/`
-     *  labelPath: path to `labels.txt`
+     * @param args[0] loopCount Number of captcha to generate
+     * @param args[1] imagesPath Path to `images/`
+     * @param args[2] labelPath Path to `labels.txt`
      */
     public static void main(String[] args) {
         int loopCount = 1;
