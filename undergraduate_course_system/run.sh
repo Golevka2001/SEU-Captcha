@@ -1,1 +1,0 @@
-java -Djava.io.tmpdir=/tmp/ -jar ./gen_captcha.jar 100 ./1images/ ./1labels.txt

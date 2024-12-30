@@ -80,8 +80,8 @@ if __name__ == "__main__":
     username = config["ACCOUNT"]["username"]
     password = config["ACCOUNT"]["password"]
 
-    # 读取哈希表
-    label_file_path = "labels.txt"
+    # 读取已有的图片和标签
+    label_file_path = "dataset/labels.txt"
     hash_table = {}
     if not os.path.exists(label_file_path):
         os.mknod(label_file_path)
@@ -115,11 +115,12 @@ if __name__ == "__main__":
         # 检查是否已存在
         # NOTE: 直接对img进行hash和存储后hash的结果不同
         img = Image.open(BytesIO(img))
-        img.save(f"images/tmp.jpg")
-        img = Image.open(f"images/tmp.jpg")
+        img.save("tmp.jpg")
+        img = Image.open("tmp.jpg")
         calc_hash = md5(img.tobytes()).hexdigest()
         if calc_hash in hash_table.values():
             print("已存在")
+            os.remove("tmp.jpg")
             continue
 
         # 显示
@@ -145,7 +146,7 @@ if __name__ == "__main__":
                 break
 
         # 保存
-        os.rename(f"images/tmp.jpg", f"images/{true_val}_{calc_hash}.jpg")
+        os.rename("tmp.jpg", f"dataset/images/{true_val}_{calc_hash}.jpg")
         hash_table[true_val] = calc_hash
         with open(label_file_path, "a") as f:
             f.write(f"{true_val}_{calc_hash}.jpg\t{true_val}\n")

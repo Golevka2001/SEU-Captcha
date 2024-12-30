@@ -1,7 +1,6 @@
 import base64
 import configparser
 import os
-import sys
 from hashlib import md5
 from io import BytesIO
 
@@ -9,9 +8,6 @@ import ddddocr
 import matplotlib.pyplot as plt
 import requests
 from PIL import Image
-
-sys.path.append("..")
-from seu_auth import seu_login
 
 
 def get_captcha_in_undergraduate_course_system():
@@ -46,7 +42,7 @@ if __name__ == "__main__":
 
     # 由于存在特殊字符，所以用 label.txt 保存
     # 格式：{hash_val}.jpg\t{label}
-    label_file_path = "labels.txt"
+    label_file_path = "dataset/labels.txt"
     hash_table = {}
     if not os.path.exists(label_file_path):
         os.mknod(label_file_path)
@@ -74,12 +70,12 @@ if __name__ == "__main__":
         # 检查是否已存在
         # NOTE: 直接对img进行hash和存储后hash的结果不同
         img = Image.open(BytesIO(img))
-        img.save(f"images/tmp.jpg")
-        img = Image.open(f"images/tmp.jpg")
+        img.save("tmp.jpg")
+        img = Image.open("tmp.jpg")
         calc_hash = md5(img.tobytes()).hexdigest()
         if calc_hash in hash_table.values():
             print("已存在")
-            os.remove(f"images/tmp.jpg")
+            os.remove("tmp.jpg")
             continue
 
         # 显示
@@ -109,7 +105,7 @@ if __name__ == "__main__":
                 true_val = true_val + "=?"
 
         # 保存
-        os.rename(f"images/tmp.jpg", f"images/{calc_hash}.jpg")
+        os.rename("tmp.jpg", f"dataset/images/{calc_hash}.jpg")
         hash_table[true_val] = calc_hash
         with open(label_file_path, "a") as f:
             f.write(f"{calc_hash}.jpg\t{true_val}\n")

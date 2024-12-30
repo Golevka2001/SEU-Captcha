@@ -59,8 +59,8 @@ class Main {
      */
     public static void main(String[] args) {
         int loopCount = 1;
-        String imagesPath = "./images";
-        String labelPath = "./labels.txt";
+        String imagesPath = "./dataset/images";
+        String labelPath = "./dataset/labels.txt";
 
         // Parse arguments
         if (args.length > 0) {
