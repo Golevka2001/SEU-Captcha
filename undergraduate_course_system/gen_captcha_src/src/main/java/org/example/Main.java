@@ -32,7 +32,7 @@ class Main {
             String hash = Integer.toHexString(base64.hashCode());
 
             // Drop duplicates
-            File imageFile = new File(imagesPath + hash + ".jpg");
+            File imageFile = new File(imagesPath + hash + ".png");
             if (imageFile.exists()) {
                 return;
             }
@@ -42,7 +42,7 @@ class Main {
             FileOutputStream labelFos = new FileOutputStream(labelPath, true);
             try (imageFos; labelFos) {
                 captcha.out(imageFos);
-                labelFos.write((hash + ".jpg\t" + label + "\n").getBytes());
+                labelFos.write((hash + ".png\t" + label + "\n").getBytes());
             }
         } catch (Exception e) {
             e.printStackTrace();

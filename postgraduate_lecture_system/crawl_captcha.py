@@ -104,7 +104,7 @@ if __name__ == "__main__":
 
     # 获取 - 识别 - 人工校对 - 保存
     cnt = 0
-    right = 0
+    correct_cnt = 0
     fig, ax = plt.subplots()
     ax.axis("off")
     img_display = ax.imshow([[0]], aspect="auto")
@@ -152,7 +152,7 @@ if __name__ == "__main__":
             f.write(f"{true_val}_{calc_hash}.jpg\t{true_val}\n")
 
         if true_val == result:
-            right += 1
+            correct_cnt += 1
         cnt += 1
-        print(f"当前正确率：{right}/{cnt}= {right/cnt*100:.2f}%")
+        print(f"当前正确率：{correct_cnt}/{cnt}= {correct_cnt/cnt*100:.2f}%")
     plt.close()

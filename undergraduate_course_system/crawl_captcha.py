@@ -40,18 +40,6 @@ if __name__ == "__main__":
     username = config["ACCOUNT"]["username"]
     password = config["ACCOUNT"]["password"]
 
-    # 由于存在特殊字符，所以用 label.txt 保存
-    # 格式：{hash_val}.jpg\t{label}
-    label_file_path = "dataset/labels.txt"
-    hash_table = {}
-    if not os.path.exists(label_file_path):
-        os.mknod(label_file_path)
-    with open(label_file_path, "r") as f:
-        for line in f:
-            file_name, label = line.strip().split("\t")
-            hash_val = file_name.split(".")[0]
-            hash_table[label] = hash_val
-
     # 初始化识别器
     charset = "1234567890+-x=?"
     ocr = ddddocr.DdddOcr()
@@ -59,7 +47,7 @@ if __name__ == "__main__":
 
     # 获取 - 识别 - 人工校对 - 保存
     cnt = 0
-    right = 0
+    correct_cnt = 0
     fig, ax = plt.subplots()
     ax.axis("off")
     img_display = ax.imshow([[0]], aspect="auto")
@@ -67,51 +55,31 @@ if __name__ == "__main__":
         # 获取验证码
         img = get_captcha_in_undergraduate_course_system()
 
-        # 检查是否已存在
-        # NOTE: 直接对img进行hash和存储后hash的结果不同
-        img = Image.open(BytesIO(img))
-        img.save("tmp.jpg")
-        img = Image.open("tmp.jpg")
-        calc_hash = md5(img.tobytes()).hexdigest()
-        if calc_hash in hash_table.values():
-            print("已存在")
-            os.remove("tmp.jpg")
-            continue
-
         # 显示
+        img = Image.open(BytesIO(img))
+        print(img)
+        img.save("tmp.png")
+        img = Image.open("tmp.png")
+        print(img)
+        # os.remove("tmp.png")
         img_display.set_data(img)
         plt.draw()
         plt.pause(0.1)
 
         # 验证码识别
         result = ocr.classification(img)
-        result = ocr.classification(img, probability=True)
-        s = ""
-        for j in result["probability"]:
-            s += result["charsets"][j.index(max(j))]
-        result = s
-        # print(result)
+        # result = ocr.classification(img, probability=True)
+        # s = ""
+        # for j in result["probability"]:
+        #     s += result["charsets"][j.index(max(j))]
+        # result = s
+        print(result)
 
-        # 输入验证码
-        true_val = ""
-        while true_val == "" or not set(true_val).issubset(set(charset)):
-            true_val = input("按ENTER确认识别结果，或输入正确的验证码：")
-            if true_val == "":
-                true_val = result
-                break
-            # 修正
-            true_val = true_val.replace("？", "?").replace("*", "x")
-            if true_val[-1].isdigit():
-                true_val = true_val + "=?"
+        # 判断结果正误
+        is_correct = input("是否正确？(y/n): ")
+        if is_correct == "y":
+            correct_cnt += 1
 
-        # 保存
-        os.rename("tmp.jpg", f"dataset/images/{calc_hash}.jpg")
-        hash_table[true_val] = calc_hash
-        with open(label_file_path, "a") as f:
-            f.write(f"{calc_hash}.jpg\t{true_val}\n")
-
-        if true_val == result:
-            right += 1
         cnt += 1
-        print(f"当前正确率：{right}/{cnt}= {right/cnt*100:.2f}%")
+        print(f"当前正确率：{correct_cnt}/{cnt}= {correct_cnt/cnt*100:.2f}%")
     plt.close()
