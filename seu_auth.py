@@ -156,7 +156,7 @@ def get_pub_key(session):
             raise Exception(f"[{res.status_code}, {res.reason}]")
 
         pub_key = res.json()["publicKey"]
-        print("获取RSA公钥成功")
+        # print("获取RSA公钥成功")
         return pub_key
     except Exception as e:
         print("获取RSA公钥失败，错误信息", e)
@@ -182,7 +182,7 @@ def rsa_encrypt(message: str, pub_key: str):
         cipher = PKCS1_v1_5.new(rsa_key)
         cipher_text = base64.b64encode(cipher.encrypt(message.encode()))  # base64
 
-        print("RSA加密成功")
+        # print("RSA加密成功")
         return cipher_text.decode()
     except Exception as e:
         print("RSA加密失败，错误信息：", e)
@@ -287,7 +287,7 @@ def seu_logout(session):
         res = session.post(url=url, verify=False)
         if res.status_code != 200 or not res.json()["success"]:
             raise Exception(f"[{res.status_code}, {res.reason}]")
-        print("退出登录成功")
+        # print("退出登录成功")
     except Exception as e:
         print("退出登录失败，错误信息：", e)
 
