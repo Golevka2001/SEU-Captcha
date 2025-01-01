@@ -1,0 +1,5 @@
+ddddocr
+matplotlib
+Pillow
+pycryptodome
+requests~=2.31.0
